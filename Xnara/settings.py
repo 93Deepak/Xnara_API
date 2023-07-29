@@ -132,3 +132,60 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+import os
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False if DEBUG else True,
+    "formatters": {
+        "verbose": {
+            "format": "{levelname} {asctime} {module} {process:d} {thread:d} {message}",
+            "style": "{",
+        },
+        "simple": {
+            "format": "{levelname} {message}",
+            "style": "{",
+        },
+    },
+    "handlers": {
+        "file": {
+            "level": "DEBUG",
+            "class": "logging.FileHandler",
+            "filename": os.path.join(BASE_DIR, 'log/debug.log'),
+        },
+        "info": {
+            "level":"INFO",
+            "class":"logging.handlers.RotatingFileHandler",
+            "filename": os.path.join(BASE_DIR, 'log/info.log'),
+            "maxBytes": 20 * 1024 *1024, # 20 MB size
+            "formatter": "verbose",
+            "encoding":  "utf-8"
+        },
+          "error": {
+            "level":"ERROR",
+            "class":"logging.handlers.RotatingFileHandler",
+            "filename": os.path.join(BASE_DIR, 'log/errors.log'),
+            "maxBytes": 20 * 1024 *1024, # 20 MB size
+            "formatter": "verbose",
+            "encoding":  "utf-8"
+        }
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["file"],
+            "level": "DEBUG",
+            "propagate": True,
+        },
+        "api_log_info": {
+            "handlers":["info"],
+            "level":"INFO",
+            "propagate": True,
+        },
+         "api_log_error": {
+            "handlers":["error"],
+            "level":"ERROR",
+            "propagate": True,
+        },
+    }
+}
